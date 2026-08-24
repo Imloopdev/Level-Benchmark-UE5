@@ -40,7 +40,7 @@ Editor-only Unreal Engine plugin that benchmarks the currently loaded level: a s
 
 ## Requirements
 
-- Unreal Engine 5.7.
+- Unreal Engine 5.7 or 5.8.
 - Windows (built and tested on Windows; other platforms untested).
 - Editor-only — the plugin adds nothing to packaged builds.
 
@@ -127,6 +127,8 @@ Click **Compare with Previous...** and pick a previously exported `Benchmark_Sum
 
 ![Run comparison table](comparison.png)
 
+*Added a bunch of overlapping cubes to show the difference in a hypotechical level edit*
+
 This is an aggregate-only comparison — it does not match individual actors across runs, since actor identity isn't guaranteed stable across level edits between benchmarks.
 
 ## Flags Reference
@@ -141,6 +143,7 @@ This is an aggregate-only comparison — it does not match individual actors acr
 | Instanced xN (effective M tris) | Instanced/HISM component; N instances, M = per-instance tris × N. |
 | Uses high-complexity material (X) | References one of the level's top materials by texture sample count. |
 | Uses overdraw-prone material (X) | References one of the level's top Translucent/Masked/Additive/Modulate/AlphaComposite materials by usage count. |
+| HLOD proxy (collision expected absent) | Mesh belongs to a World Partition HLOD proxy actor. Shown instead of "Missing collision" — HLOD proxies never carry collision by design, so this isn't flagged as an issue. |
 
 **Lights**
 
@@ -161,10 +164,15 @@ This is an aggregate-only comparison — it does not match individual actors acr
 ## Known Limitations
 
 - Shader complexity and overdraw are sampled from 2–3 fixed camera points (PlayerStart actors, or level center as a fallback), not a full per-pixel heatmap.
-- The GPU pass breakdown reads internal RHI breadcrumb data; verified against UE 5.7. Pass names may shift on other engine versions.
+- The GPU pass breakdown reads internal engine profiling data, and the mechanism differs by engine version: the RHI breadcrumb GPU profiler on UE 5.7, the classic STATS system on UE 5.8 (Epic restructured this between versions). Both are internal engine plumbing, not public API — pass names or behavior may shift again on future engine versions.
+- On UE 5.8 specifically, capturing GPU pass timing enables the engine's "stat gpu" on-screen HUD as a side effect — there's no lower-level way to enable the underlying data collection without it. It stays on for the current and future PIE sessions until toggled off manually (type `stat gpu` again in the PIE console).
 - Per-light GPU costs are not strictly additive — shadow channel packing changes when lights are toggled, so costs don't sum linearly to the level's total lighting cost.
 - No hard cap on light count for the per-light pass, only a UI time-estimate warning above 50 lights.
 - PIE settle time before capture is time-based (~1.5s), not frame-count-based.
+
+## Get the plugin:
+
+Fab: 
 
 ## Support
 
