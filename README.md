@@ -172,7 +172,7 @@ This is an aggregate-only comparison — it does not match individual actors acr
 
 ## Get the plugin:
 
-Fab: 
+Fab: https://www.fab.com/listings/f913a4f3-f838-479b-afe3-b9d97c2ae53a
 
 ## Support
 
